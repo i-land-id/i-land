@@ -1,7 +1,7 @@
 # I-Land
 
 ## Tentang Platform
-KomuniTech adalah platform berbasis web yang dirancang untuk memfasilitasi komunitas di Indonesia dalam menyampaikan kebutuhan mereka secara terstruktur dan terorganisir. Platform ini bertujuan untuk menjembatani kesenjangan antara kebutuhan komunitas dan solusi teknologi melalui pendekatan partisipatif.
+I-Land adalah platform berbasis web yang dirancang untuk mempermudah pengguna dalam menentukan nilai valuasi tanah berdasarkan indikator-indikator yang objektif, transparan, dan sesuai data, sehingga akan memperkecil kemungkinan flaktuasi harga tak terarah akibat mafia tanah.
 
 ## Fitur Utama
 
