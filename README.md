@@ -14,10 +14,10 @@ I-Land adalah platform berbasis web yang dirancang untuk mempermudah pengguna da
 2. Pilih "Masuk/Daftar" atau klik tombol navigasi langsung ke fitur tertentu
 ### Menggunakan Fitur Penilaian Lokasi
 1. Input Data Lokasi:
-  - Masukkan luas tanah dalam meter persegi (m²)
-  - Pilih provinsi/kawasan dari dropdown
-  - Pilih wilayah/lokasi spesifik (otomatis ter-update berdasarkan provinsi)
-  - Input kepadatan penduduk per 1km²
+    - Masukkan luas tanah dalam meter persegi (m²)
+    - Pilih provinsi/kawasan dari dropdown
+    - Pilih wilayah/lokasi spesifik (otomatis ter-update berdasarkan provinsi)
+    - Input kepadatan penduduk per 1km²
 2. Klik tombol "Analisis Lokasi"
   Sistem akan menghitung skor lokasi berdasarkan:
     - Zona geografis (40%)
@@ -32,9 +32,9 @@ I-Land adalah platform berbasis web yang dirancang untuk mempermudah pengguna da
     - Visualisasi lokasi di peta interaktif
 ### Menggunakan Fitur Simulasi Investasi Tanah
 1. Input Simulasi:
-  - Masukkan harga perolehan awal (Rupiah)
-  - Tentukan proyeksi tahun (1-20 tahun)
-  - Input persentase pertumbuhan harga tahunan (0-50%)
+    - Masukkan harga perolehan awal (Rupiah)
+    - Tentukan proyeksi tahun (1-20 tahun)
+    - Input persentase pertumbuhan harga tahunan (0-50%)
 2. Klik "Jalankan Simulasi"
 3. Grafik interaktif akan menampilkan proyeksi pertumbuhan nilai investasi
 ### Menggunakan Fitur Analisis Pasar
