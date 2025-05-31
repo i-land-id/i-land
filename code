@@ -5,6 +5,12 @@ library(shinydashboard)
 library(leaflet)
 library(DT)
 
+user <- data.frame(
+  username = c("admin", "user1"),
+  password = c("admin123", "password1"),
+  stringsAsFactors = FALSE
+)
+
 # Data harga lengkap dengan rentang harga dan koordinat (latitude, longitude) untuk peta (koordinat disederhanakan)
 harga_lengkap <- data.frame(
   Provinsi_Kawasan = c(
@@ -110,75 +116,96 @@ ui <- fluidPage(
   tags$head(
     tags$meta(name = "viewport", content = "width=device-width, initial-scale=1"),
     tags$style(HTML("
-      html, body {
-        height: 100%;
-        margin: 0;
-        font-family: 'Segoe UI', sans-serif;
-        background-color: #0000;
-      }
-      .center-wrapper {
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(to right, #ede7f6, #f3e5f5);
-      }
-      .main-box {
-        background-color: #ffffff;
-        padding: 40px;
-        border-radius: 16px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-        text-align: center;
-        width: 100%;
-        max-width: 600px;
-      }
-      h1, h2, h3 {
-        color: #4a148c;
-        font-weight: 600;
-      }
-      p {
-        font-size: 16px;
-        color: #444;
-      }
-      .btn-purple {
-        background-color: #6a1b9a;
-        color: white;
-        border: none;
-        padding: 10px 24px;
-        border-radius: 10px;
-        font-size: 16px;
-      }
+ 	 html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f8f9fa;
+  	}
+  	.center-wrapper {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ede7f6, #fce4ec);
+      padding: 20px;
+  	}
+  	.main-box {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+  	}
+  	.main-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+  	}
+  	h1, h2, h3 {
+      color: #512da8;
+      font-weight: 700;
+      margin-bottom: 15px;
+  	}
+  	p {
+    	font-size: 16px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 20px;
+  	}
+  	.btn-purple {
+      background-color: #7b1fa2;
+      color: #ffffff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  	}
       .btn-purple:hover {
-        background-color: #4a148c;
-      }
-      .navbar {
-        background-color: #6a1b9a !important;
-        border-bottom: 3px solid #ab47bc;
-      }
-      .navbar-brand {
-        font-weight: bold;
-        color: white !important;
-      }
-      .navbar-nav > li > a {
-        color: white !important;
-        font-weight: 500;
-      }
-      #map {
-        height: 380px;
-        border-radius: 14px;
-        margin-top: 15px;
-        border: 1px solid #e0e0e0;
-      }
-      .dt-center {
-        text-align: center;
-      }
-    "))
+        background-color: #6a1b9a;
+      box-shadow: 0 4px 12px rgba(123, 31, 162, 0.4);
+  	}
+  	.btn-block {
+    	display: block;
+    	width: 100%;
+  	}
+  	.navbar {
+        background-color: #7b1fa2 !important;
+      border-bottom: 4px solid #ba68c8;
+  	}
+  	.navbar-brand {
+    	font-weight: bold;
+      color: white !important;
+  	}
+  	.navbar-nav > li > a {
+    	color: white !important;
+      font-weight: 600;
+      transition: color 0.3s ease;
+  	}
+  	.navbar-nav > li > a:hover {
+      color: #f3e5f5 !important;
+  	}
+  	
+  	#map {
+    	height: 380px;
+    	border-radius: 14px;
+    	margin-top: 15px;
+    	border: 1px solid #e0e0e0;
+  	}
+  	.dt-center {
+    	text-align: center;
+  	}
+	"))
   ),
   
   navbarPage(
     title = div(
       img(
-        src = "https://drive.google.com/thumbnail?id=1Z8LoczMonL1Udns7pQVOGA_OrUvELPmm", 
+        src = "https://drive.google.com/thumbnail?id=1Z8LoczMonL1Udns7pQVOGA_OrUvELPmm",
         style = "height:30px; margin-right:10px; vertical-align:middle; border-radius: 6px;"
       ),
       span("Valuasi Aset Pro", style = "vertical-align:middle; font-weight:bold; color:white; font-size:18px;")
@@ -193,11 +220,46 @@ ui <- fluidPage(
                      h1("Sistem Valuasi Lokasi Aset"),
                      p("Aplikasi modern untuk menganalisis nilai tanah berdasarkan lokasi, aksesibilitas, dan proyeksi investasi."),
                      br(),
-                     actionButton("start_btn", "Mulai Penilaian", class = "btn-purple",
-                                  onclick = "document.getElementById('nav').querySelector('a[data-value=\"Penilaian Lokasi\"]').click();")
+                     actionButton("start_btn", "Masuk/ daftar", class = "btn-purple",
+                                  onclick = "document.getElementById('nav').querySelector('a[data-value=\"Login\"]').click();"),
+                     br(), br(),
+                     fluidRow(
+                       column(6,
+                              actionButton("simulasi_btn_home", "Simulasi Investasi Tanah", class = "btn-purple btn-block",
+                                           onclick = "Shiny.setInputValue('navtab', 'Simulasi Investasi Tanah', {priority: 'event'})")
+                       ),
+                       column(6,
+                              actionButton("analisis_btn_home", "Analisis Pasar", class = "btn-purple btn-block",
+                                           onclick = "Shiny.setInputValue('navtab', 'Analisis Pasar', {priority: 'event'})")
+                       )
+                     ),
+                     br(),
+                     fluidRow(
+                       column(12,
+                              actionButton("penilaian_btn_home", "Penilaian Lokasi", class = "btn-purple btn-block",
+                                           onclick = "Shiny.setInputValue('navtab', 'Penilaian Lokasi', {priority: 'event'})")
+                       )
+                     ),
+                     br(),
+                     fluidRow(
+                       column(12,
+                              actionButton("dataharga_btn_home", "Data Harga Lengkap", class = "btn-purple btn-block",
+                                           onclick = "Shiny.setInputValue('navtab', 'Data Harga Lengkap', {priority: 'event'})")
+                       )
+                     )
                  )
              )
     ),
+    tabPanel("Login",
+             div(class = "main-box",
+                 h2("Login ke Valuasi Aset Pro"),
+                 textInput("login_user", "Username"),
+                 passwordInput("login_pass", "Password"),
+                 actionButton("login_btn", "Login", class = "btn-purple"),
+                 textOutput("login_msg")
+             )
+    ),
+    
     
     tabPanel("Penilaian Lokasi",
              fluidRow(
@@ -206,7 +268,7 @@ ui <- fluidPage(
                       numericInput("luas", "Luas Tanah (m²)", value = NULL, min = 1),
                       selectInput("provinsi", "Provinsi / Kawasan", choices = unique(harga_lengkap$Provinsi_Kawasan)),
                       uiOutput("wilayah_ui"),
-                      numericInput("akses", "Skor Akses Jalan (1-10)", value = NULL, min = 1, max = 10),
+                      numericInput("akses", "Kepadatan Penduduk (per 1km²)", value = NULL, min = 1, max = 10000000),
                       actionButton("hitung", "Analisis Lokasi", class = "btn-purple")
                ),
                column(6,
@@ -217,13 +279,13 @@ ui <- fluidPage(
              )
     ),
     
-    tabPanel("Simulasi Investasi",
+    tabPanel("Simulasi Investasi Tanah",
              fluidRow(
                column(6,
                       h3("Input Simulasi"),
-                      numericInput("investasi_awal", "Investasi Awal (Rp)", value = NULL, min = 1),
-                      numericInput("tahun_proyeksi", "Proyeksi Tahun", value = 5, min = 1, max = 20),
-                      numericInput("pertumbuhan", "Pertumbuhan Harga (%)", value = 10, min = 0, max = 50),
+                      numericInput("investasi_awal", "Harga Perolehan Awal (Rp)", value = NULL, min = 1),
+                      numericInput("tahun_proyeksi", "Proyeksi Tahun", value = 0, min = 1, max = 20),
+                      numericInput("pertumbuhan", "Pertumbuhan Harga (%) (Berdasarkan yang berlaku dipasaran)", value = 0, min = 0, max = 50),
                       actionButton("simulasi_btn", "Jalankan Simulasi", class = "btn-purple")
                ),
                column(6,
@@ -259,6 +321,41 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
+  login_status <- reactiveValues(logged_in = FALSE)
+  
+  observeEvent(input$login_btn, {
+    user_row <- user[user$username == input$login_user & user$password == input$login_pass, ]
+    
+    if (nrow(user_row) == 1) {
+      login_status$logged_in <- TRUE
+      updateTabsetPanel(session, "nav", selected = "Penilaian Lokasi")
+    } else {
+      output$login_msg <- renderText("❌ Username atau Password salah.")
+    }
+  })
+  
+  protected_ui <- function(ui_content){
+    if(login_status$logged_in) {
+      ui_content
+    } else {
+      div(class = "main-box",
+          h3("🔒 Anda harus login terlebih dahulu."),
+          actionButton("redirect_login", "Login Sekarang", class = "btn-purple",
+                       onclick = "document.getElementById('nav').querySelector('a[data-value=\"Login\"]').click();")
+      )
+    }
+  }
+  
+  output$main_content <- renderUI({
+    if (login_status$logged_in) {
+      fluidRow(
+        column(6, h3("Input Data Lokasi")),
+        column(6, h3("Hasil Valuasi"))
+      )
+    } else {
+      div(class = "main-box", h3("Silakan login terlebih dahulu."))
+    }
+  })
   
   # === UI: Dropdown wilayah dinamis ===
   output$wilayah_ui <- renderUI({
@@ -289,18 +386,21 @@ server <- function(input, output, session) {
     total_skor <- round(zona_skor * 0.4 + akses * 0.3 + (harga_rata / 1e6) * 0.3, 2)
     harga_jual <- round(luas * harga_rata * (total_skor / 10), 0)
     
-    kategori_potensi <- dplyr::case_when(
-      total_skor >= 8 ~ "Sangat Tinggi",
-      total_skor >= 6 ~ "Tinggi",
-      total_skor >= 4 ~ "Sedang",
-      TRUE ~ "Rendah"
-    )
+    kategori_potensi <- if (total_skor >= 1000) {
+      "Tinggi"
+    } else if (total_skor <= 100) {
+      "Rendah"
+    } else if (total_skor < 1000) {
+      "Sedang"
+    } else {
+      "Sangat Tinggi"
+    }
     
     rekomendasi <- switch(kategori_potensi,
                           "Sangat Tinggi" = "Lokasi sangat strategis. Sangat direkomendasikan untuk investasi.",
-                          "Tinggi"        = "Lokasi cukup potensial. Layak untuk dipertimbangkan.",
-                          "Sedang"        = "Lokasi memiliki potensi terbatas. Perlu evaluasi lebih lanjut.",
-                          "Rendah"        = "Lokasi kurang menjanjikan. Disarankan mencari alternatif lain."
+                          "Tinggi"    	= "Lokasi berpotensi dan layak",
+                          "Sedang"    	= "Lokasi berpotensi cukup baik. Perlu evaluasi lebih lanjut.",
+                          "Rendah"    	= "Lokasi kurang menjanjikan. Disarankan mencari alternatif lain."
     )
     
     list(
@@ -334,10 +434,11 @@ server <- function(input, output, session) {
           h4("Hasil Analisis Lokasi"),
           tags$ul(
             tags$li(strong("Total Skor Lokasi:"), paste(hasil$total_skor)),
-            tags$li(strong("Estimasi Harga Jual:"), paste0("Rp ", format(hasil$harga_jual, big.mark = "."))),
+            tags$li(strong("Estimasi Harga Jual:"), paste0("Rp ", formatC(hasil$harga_jual, format = "f", big.mark = ".", digits = 0))),
             tags$li(strong("Kategori Potensi:"), hasil$kategori_potensi),
-            tags$li(strong("Rentang Harga Referensi:"), 
-                    paste0("Rp ", format(hasil$harga_min, big.mark = "."), " - Rp ", format(hasil$harga_max, big.mark = ".")))
+            tags$li(strong("Rentang Harga Referensi:"),
+                    paste0("Rp ", formatC(hasil$harga_min, format = "f", big.mark = ".", digits = 0),
+                           " - Rp ", formatC(hasil$harga_max, format = "f", big.mark = ".", digits = 0)))
           ),
           p(strong("Rekomendasi:"), hasil$rekomendasi)
       )
@@ -350,7 +451,7 @@ server <- function(input, output, session) {
         lng = hasil$lng, lat = hasil$lat,
         popup = paste0(
           "<b>", input$wilayah, ", ", input$provinsi, "</b><br/>",
-          "Harga: Rp ", format(hasil$harga_min, big.mark = "."), 
+          "Harga: Rp ", format(hasil$harga_min, big.mark = "."),
           " - Rp ", format(hasil$harga_max, big.mark = "."), "<br/>",
           "<i>Kategori: ", hasil$kategori_potensi, "</i>"
         )
@@ -430,6 +531,11 @@ server <- function(input, output, session) {
     leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
       setView(lng = 110, lat = -6, zoom = 5)
+  })
+  
+  # === Navigasi Shortcut dari Beranda ===
+  observeEvent(input$navtab, {
+    updateTabsetPanel(session, "nav", selected = input$navtab)
   })
 }
 
